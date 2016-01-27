@@ -1,0 +1,34 @@
+#!/bin/bash
+## This will be for daily
+set -x
+
+echo "Making sure that all the toolkits are installed for all versions of the odroid"
+. common/checkToolkits
+
+echo "Pulling in Common configurations "
+. common/common.sh
+
+cd $rootDir
+## remove the old toochains
+## FIXME this takes way to long and needs to be set to not remove after installed all toolkits
+echo "removing and unpacking the old toolkits for the new ones"
+rm -r $rootDir/toolkits/
+mkdir -p $rootDir/toolkits
+## check to make sure that all the cross compile toolkits are in fact installed
+allKits
+
+echo "Making sure that all internal dependencys for the build are installed "
+./common/deps
+
+echo "Getting ready to build for the Board $board"
+echo "For the OS Debian with the code name of $codeName "
+
+#if [[ $board == "U" ]];
+#then
+./$manufacturer-$board.sh $version $codeName
+#elif [[ $board == "C" ]];
+#then
+#./odroid-C.sh $version $codeName
+#else
+#./odroid-X.sh $version $codeName
+#fi

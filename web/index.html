@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"> 
+<!-- Custom styles for this template -->
+    <link href="css/dashboard.css" rel="stylesheet">
+	<title id='mainTtitle'>YAAB Builder</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/bootstrap-list-filter.js"></script>
+</head>
+<script> 
+    $(function(){
+        $("#body").load("/templete/body.html"); 
+        $("#footer").load("templete/footer.html"); 
+        $("#loader").load("templete/main.html");
+    });
+</script> 
+</head>
+<body>
+<div id="body"></div>
+<div id="footer"></div>
+</body>
+</html>

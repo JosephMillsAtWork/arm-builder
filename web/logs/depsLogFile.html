@@ -1,0 +1,120 @@
+<html>
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link href="http://infiniteautomation.com/templates/ws_minded/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />    
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet"> 
+	<!-- Custom styles for this template -->
+        <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+<!-- these two divs end in the heder -->
+      <div class="container-fluid">
+      <div class="row">
+            
+      <!-- left hand side basr -->
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="depsLogFile.html">Pre Deps</a></li>
+            <li><a href="ubootLogfile.html">UBoot</a></li>
+            <li><a href="kernelCompileLogfile.html">Kernel Compile</a></li>
+            <li><a href="mkImageMountLog.html">Image</a></li>
+            <li><a href="debootstrapLogFile.html">Debootstrap</a></li>
+            <li><a href="stage3Logfile.html">Stage3</a></li>
+            <li><a href="compressLogFile.html">Compress</a></li>
+          </ul>
+        </div>
+<!--This also ends in the footer file -->
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <img src="img/logo.png" /><h1 class="page-header">Debootstrap Log File</h1>
+	<h3>Pre Deps Log</h3>
+	<hr>
+	<label for="stageOne">Install packages</label>
+	<textarea class="form-control" overview="auto" rows="5" id="stageOne">
+E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. 
+</textarea>
+<h3>Adding i388 arch and updating system</h3><hr>
+<textarea class='form-control' overview='auto' rows='5'>
+Ign http://dl.google.com stable InRelease
+Hit http://security.debian.org stretch/updates InRelease
+Ign http://dl.google.com stable InRelease
+Hit http://ftp.us.debian.org stretch InRelease
+Hit http://ftp.us.debian.org stretch-updates InRelease
+Hit http://dl.google.com stable Release.gpg
+Ign http://ppa.launchpad.net trusty InRelease
+Hit http://dl.google.com stable Release.gpg
+Hit http://dl.google.com stable Release
+Hit http://dl.google.com stable Release
+Hit http://ppa.launchpad.net trusty Release.gpg
+Hit http://ppa.launchpad.net trusty Release
+Hit http://security.debian.org stretch/updates/main Sources
+Hit http://security.debian.org stretch/updates/contrib Sources
+Get:1 http://ftp.us.debian.org stretch/main Sources/DiffIndex [7,876 B]
+Hit http://security.debian.org stretch/updates/non-free Sources
+Hit http://security.debian.org stretch/updates/main amd64 Packages
+Hit http://dl.google.com stable/main amd64 Packages
+Hit http://security.debian.org stretch/updates/contrib amd64 Packages
+Hit http://security.debian.org stretch/updates/non-free amd64 Packages
+Hit http://security.debian.org stretch/updates/main i386 Packages
+Hit http://security.debian.org stretch/updates/contrib i386 Packages
+Hit http://security.debian.org stretch/updates/non-free i386 Packages
+Hit http://security.debian.org stretch/updates/contrib Translation-en
+Hit http://security.debian.org stretch/updates/main Translation-en
+Hit http://security.debian.org stretch/updates/non-free Translation-en
+Hit http://dl.google.com stable/main i386 Packages
+Hit http://dl.google.com stable/main amd64 Packages
+Hit http://dl.google.com stable/main i386 Packages
+Get:2 http://ftp.us.debian.org stretch/contrib Sources/DiffIndex [7,267 B]
+Get:3 http://ftp.us.debian.org stretch/non-free Sources/DiffIndex [7,819 B]
+Hit http://ppa.launchpad.net trusty/main amd64 Packages
+Get:4 http://ftp.us.debian.org stretch/main amd64 Packages/DiffIndex [7,876 B]
+Get:5 http://ftp.us.debian.org stretch/contrib amd64 Packages/DiffIndex [7,819 B]
+Get:6 http://ftp.us.debian.org stretch/non-free amd64 Packages/DiffIndex [7,819 B]
+Get:7 http://ftp.us.debian.org stretch/main i386 Packages/DiffIndex [7,876 B]
+Get:8 http://ftp.us.debian.org stretch/contrib i386 Packages/DiffIndex [7,819 B]
+Get:9 http://ftp.us.debian.org stretch/non-free i386 Packages/DiffIndex [7,819 B]
+Get:10 http://ftp.us.debian.org stretch/contrib Translation-en/DiffIndex [4,783 B]
+Get:11 http://ftp.us.debian.org stretch/main Translation-en/DiffIndex [7,876 B]
+Get:12 http://ftp.us.debian.org stretch/non-free Translation-en/DiffIndex [6,025 B]
+Hit http://ppa.launchpad.net trusty/main i386 Packages
+Hit http://ftp.us.debian.org stretch-updates/main Sources
+Hit http://ftp.us.debian.org stretch-updates/contrib Sources
+Hit http://ftp.us.debian.org stretch-updates/non-free Sources
+Hit http://ftp.us.debian.org stretch-updates/main amd64 Packages
+Hit http://ftp.us.debian.org stretch-updates/contrib amd64 Packages
+Hit http://ftp.us.debian.org stretch-updates/non-free amd64 Packages
+Ign http://dl.google.com stable/main Translation-en_US
+Ign http://dl.google.com stable/main Translation-en
+Hit http://ftp.us.debian.org stretch-updates/main i386 Packages
+Ign http://dl.google.com stable/main Translation-en_US
+Ign http://dl.google.com stable/main Translation-en
+Hit http://ftp.us.debian.org stretch-updates/contrib i386 Packages
+Hit http://ftp.us.debian.org stretch-updates/non-free i386 Packages
+Hit http://ftp.us.debian.org stretch-updates/contrib Translation-en
+Hit http://ftp.us.debian.org stretch-updates/main Translation-en
+Hit http://ftp.us.debian.org stretch-updates/non-free Translation-en
+Ign http://ppa.launchpad.net trusty/main Translation-en_US
+Ign http://ppa.launchpad.net trusty/main Translation-en
+Fetched 88.7 kB in 7s (11.1 kB/s)
+E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. 
+</textarea><h3>Adding ncurses and 32z1</h3><hr>
+<textarea class='form-control' overview='auto' rows='5'>
+E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. 
+E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. 
+</textarea>
+<!-- lets leave this space so that it looks good. -->
+</div> <!--Our main cleass that is on the right -->
+</div> <!-- row aka nav bar on the left --> 
+</div><!--container-fluid-->
+
+<div class="footer"> 
+        Mango Repository by <a href="http://infiniteautomation.com/">Infinite Automation</a>
+	<br>
+        &copy; 2015  Infinite Automation all rights reserved
+</div> <!-- footer -->
+<!-- Bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>

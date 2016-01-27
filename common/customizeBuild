@@ -1,0 +1,82 @@
+#!/bin/bash
+## PLEASE READ:
+## THIS FILE IS NOT TO BE RUN BY HUMAN
+## One alters this so that it runs in the cron scripts. 
+
+cat << EOF > $manufacturer-$architecture/debconf.set
+console-common console-data/keymap/policy select Select keymap from full list
+console-common console-data/keymap/full select us
+EOF
+
+
+dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
+cp /bin/true /usr/sbin/invoke-rc.d
+echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
+
+sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
+rm -f /etc/udev/rules.d/70-persistent-net.rules
+rm -f /usr/sbin/policy-rc.d
+rm -f /usr/sbin/invoke-rc.d
+dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
+
+echo "adding the user mango to the OS "
+# Add the user mango and make the password for root and mango "mango" 
+add_mango_user(){
+  adduser --disabled-password --gecos "" mango
+  echo "mango:mango" | chpasswd
+  echo "root:mango" | chpasswd
+}
+
+
+echo "Add the user mango to all the groups"
+add_mango_user_to_groups() {
+  groupadd -f -r input
+  for GRP in adm cdrom audio sudo video games plugdev; 
+  do
+    adduser mango $GRP
+  done
+}
+
+add_mango_user
+add_mango_user_to_groups
+
+
+echo "Updating the OS"
+apt-get update
+apt-get --yes --force-yes install $packages
+
+debconf-set-selections /debconf.set
+rm -f /debconf.set
+
+
+echo "Adding mango to the system And setting the permissions of mango to be correct "
+##FIXME add package in common mangolook
+add_mango_to_opt(){
+mkdir -p /opt/mango
+  cd /opt/mango
+  wget http://infiniteautomation.com/latest.zip
+  unzip -o *.zip
+  rm *.zip
+  cd ../
+  mkdir -p /opt/mango/overrides/properties/
+  cp  mango/classes/env.properties mango/overrides/properties/env.properties
+  sed -i "s|web.port=8080|web.port=80|g" mango/overrides/properties/env.properties
+  chown -R mango:mango /opt/mango/
+  chmod 755 /opt/mango
+  echo "Changing Permissions"
+  find /opt/mango/ -type d -exec chmod 755 {} \;
+  find /opt/mango/ -type f -exec chmod 644 {} \;
+  find /opt/mango/ -name "*.sh" -exec chmod u+x {} \;
+  find /opt/mango/ -name "*.bat" -exec chmod u+x {} \;
+}
+
+add_mango_to_opt
+
+cd -
+
+echo "Turning the timezone to America Denver "
+echo "America/Denver" > /etc/timezone
+rm -f /third-stage
+
+echo "Done Running the CustomBuild Script "

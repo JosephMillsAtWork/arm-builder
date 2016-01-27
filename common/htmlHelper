@@ -1,0 +1,195 @@
+#!/bin/bash 
+set -x
+## Simple script that returns the html and emails when system 
+## is not built
+## Create all Log files
+## At the end of the script we put it all together.
+## Unless status != 0
+headerLogFile=$rootDir/web/logs/header.html
+bodyLogFile=$rootDir/web/logs/body.html
+footerLogFile=$rootDir/web/logs/footer.html
+
+
+createLogIndex(){
+	mkdir -p $rootDir/web/logs
+	## copy over bootstrap
+        cp -r static/css $rootDir/web/logs
+        cp -r static/js $rootDir/web/logs
+        cp -r static/fonts $rootDir/web/logs
+    	cp -r static/img $rootDir/web/logs
+	
+	cp config/header.html $rootDir/web/logs/header.html
+	cp config/body.html $rootDir/web/logs/body.html
+	cp config/footer.html $rootDir/web/logs/footer.html
+	
+	cp config/depsLogFile.html $rootDir/web/logs
+	## because this is done we can clean it up 
+	rm config/depsLogFile.html
+	
+	
+	logFile=$rootDir/web/logs/index.html
+	touch $logFile;
+	
+	debootstrapLogFile=$rootDir/web/logs/debootstrapLogFile.html
+	touch $debootstrapLogFile;
+	
+	stage3Logfile=$rootDir/web/logs/stage3Logfile.html
+	touch $stage3Logfile;
+	
+	mkImageMountLog=$rootDir/web/logs/mkImageMountLog.html
+	touch $mkImageMountLog;
+	
+	kernelCompileLogfile=$rootDir/web/logs/kernelCompileLogfile.html
+	touch $kernelCompileLogfile;
+	
+	ubootLogfile=$rootDir/web/logs/ubootLogfile.html
+	touch $ubootLogfile;
+
+	compressLogFile=$rootDir/web/logs/compressLogFile.html
+	touch $compressLogFile;
+	
+	cat config/header.html > $logFile
+	cat config/body.html >> $logFile
+
+	## used for the tidy function
+	htmlPages="$debootstrapLogFile $stage3Logfile $mkImageMountLog $logfile $kernelCompileLogfile $ubootLogfile $compressLogFile"
+
+}
+
+
+
+setupIndex(){
+hostType=$(uname -m)
+d=$(date +"%b %d %Y %I:%M %P")
+# Setup the base explaintions of the build for html
+cat <<EOF >> $rootDir/web/logsindex.html
+<h1 class="page-header">MangoES $1 $2 odroid $board Build</h1>
+<p class="lead">
+Build start time:  $d
+</p>
+   <div class="row">
+        <div class="col-md-4">
+	  <h3>host arch</h3>
+	  <p>$hostType</p>
+        </div>
+
+        <div class="col-md-4">
+	  <h3>Build Arch </h3>
+	  <p>$architecture</p>
+        </div>
+        
+        <div class="col-md-4">
+        <h3>Mirrors Used for $distro $2</h3>
+	<p> $mirror</p>
+	<p>$security</p>
+        </div>
+    </div>
+    <h2>Extra packages to install</h2>
+    <ul class="list-group">
+EOF
+}
+
+## we set up all the starting of the pages so that it is not a white screen when watching a build
+setupHtmlPages(){
+## UBOOT
+cat $rootDir/web/logs/header.html > $ubootLogfile
+cat $rootDir/web/logs/body.html >> $ubootLogfile
+cat <<EOF>> $ubootLogfile
+<h1 class="page-header">Building UBoot</h1>
+<p class="lead">
+Binarys are needed from this branch and we should also have a new compilers path
+</p>
+EOF
+
+## this is the frist time so lets wrap up the output into html with overview
+cat $rootDir/web/logs/header.html > $kernelCompileLogfile
+cat $rootDir/web/logs/body.html >> $kernelCompileLogfile
+cat <<EOF>> $kernelCompileLogfile
+<h1 class="page-header">Building the Linux Kernel</h1>
+<p class="lead">
+These are the logs from building the linux kerenl 
+</p>
+EOF
+
+### IMAGE 
+cat $rootDir/web/logs/header.html > $mkImageMountLog
+cat $rootDir/web/logs/body.html >> $mkImageMountLog
+cat <<EOF>> $mkImageMountLog
+<h1 class="page-header">Making the Image</h1>
+<p class="lead">In this process we make the image with dd then we partition it then set it all up on a loop 
+so that we can rsync our root file system to the newly mounted img file that is on the loop device. 
+</p>
+<h3>DD and other logs</h3>
+<hr>
+<pre>
+EOF
+
+## Debootstrap
+cat $rootDir/web/logs/header.html > $debootstrapLogFile
+cat $rootDir/web/logs/body.html >> $debootstrapLogFile
+# Ok Here is where the scroll chart starts
+cat <<EOF>> $debootstrapLogFile
+<h1 class="page-header">Debootstrap Log File</h1>
+	<h3>Stage One Log</h3>
+	<hr>
+	<label for="stageOne">debootstrap part 1:</label>
+	<textarea class="form-control" overview="auto" rows="5" id="stageOne">
+EOF
+
+## Stage three
+cat $rootDir/web/logs/header.html > $stage3Logfile
+cat $rootDir/web/logs/body.html >> $stage3Logfile
+# Ok Here is where the scroll chart starts
+cat <<EOF>> $stage3Logfile
+<h1 class="page-header">Custom Scripts and Apps</h1>
+<p class="lead">This is all the output that comes from our customizeBuild file This is used for things like udding users and custom software<p>
+
+<h3>Stage Three Log</h3>
+<hr>
+<label for="cScript">Custom build script output:</label>
+<textarea class="form-control" overview="auto" rows="5" id="cScript">
+EOF
+
+# ## this is the frist time so lets wrap up the output into html with overview
+cat $rootDir/web/logs/header.html > $compressLogFile
+cat $rootDir/web/logs/body.html >> $compressLogFile
+cat <<EOF>> $compressLogFile
+<h1 class="page-header">Compression Log</h1>
+<p class="lead">
+We check to see if the host is a 64 bit machine if so then we compress also. 
+If not then we just make sha1sum's  
+</p>
+EOF
+echo "<h3>Generating sha1sum for mangoes-$1-$2-odroid-$distro.img</h3>" >> $compressLogFile;
+echo "<pre>" >> $compressLogFile;
+
+}
+
+
+
+addFooter(){
+    cat $rootDir/web/logs/footer.html >> $stage3Logfile;
+    ## end of stage 3 logs
+    cat $rootDir/web/logs/footer.html >> $mkImageMountLog;
+    ## END of the make image logs
+    cat $rootDir/web/logs/footer.html >> $debootstrapLogFile
+    # End Debootstrap Html Log
+    cat $rootDir/web/logs/footer.html >> $kernelCompileLogfile
+    ## End Log for Kerenel Build
+    cat $rootDir/web/logsfooter.html >> $ubootLogfile
+    ## END of UBoot Log
+    cat $rootDir/web/logs/footer.html >> $logFile
+}
+
+tidyUp(){
+for i in $htmlPages; 
+do
+  tidy -im $i
+done
+
+## Rremove the templeate
+rm $rootDir/web/logs/header.html
+rm $rootDir/web/logs/body.html
+rm $rootDir/web/logs/footer.html
+
+}

@@ -1,0 +1,473 @@
+<!-- Builder Modal -->
+<div id="log" class="modal fade" role="dialog" data-backdrop="static" style="overflow:auto">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id='anotherclose' type="button" class="close" data-dismiss="modal">&times;</button>
+                <h2 class="modal-title">Building the image</h2>
+            </div>
+            <div class="modal-body">
+                <h4 id="builder-sub-modal-title">Debug Output</h4>
+                <img src="../img/loader.gif" id="builderIndicator" class="img-responsive center-block" />
+                <textarea id="output" class="form-control" rows="5" id="comment"></textarea>
+            <div class="modal-footer">
+                <button id="openLaterClose" type="button" class="btn btn-default" data-dismiss="modal">Burn Image</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div id="burnerModal" class="modal fade" role="dialog" data-backdrop="static" style="overflow:auto">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Picking out the EEMC card</h2>
+        </div>
+        <div class="modal-body">
+            <h4 id="builder-sub-modal-title">Hard Drive Info</h4>
+        <div id="eemcQuestion">
+        
+        </div>
+        
+        <div class="modal-footer">
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Builder Modal -->
+<div id="sdFuseModal" class="modal fade" role="dialog" data-backdrop="static" style="overflow:auto">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Are you Sure ?</h2>
+        </div>
+        <div class="modal-body">
+        <div id="sdFuseQuestion">
+        
+        </div>
+        
+        <div class="modal-footer">
+
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<button id="menuButton" type="button" class="btn btn-default btn-sm">
+   <span class="glyphicon glyphicon-menu-hamburger"></span>
+   open menu
+</button>
+
+<div id="mainConentent">
+<div class="jumbotron">
+  <img src="img/logo.png"></img>
+  <h1 id='title'>YAAB (Yet another auto builder)</h1>
+</div>
+
+<div class="col-md-12">
+    <h2>Password For Host Machine</h2>
+    <input type="password" class="form-control" id="pass"></input>
+</div>
+
+
+<div class="col-md-12">
+    <h2>YAAB Root dir</h2>
+    <input class="form-control" id="rootD"></input>
+</div>
+
+<div class="col-md-12">
+    <h2>Build Version</h2>
+    <input class="form-control" id="theBuildVersion"></input>
+</div>
+
+<div class="col-md-6">
+	<h2>Board Type</h2>
+	<hr>
+	<select id='manufacturer' class="form-control">
+		<option>Odroid</option>
+	</select>
+</div>
+
+<div class="col-md-6">
+	<h2>Board Version</h2>
+	<hr>
+	<select id='odroidBoard' class="form-control">
+  		<option>X</option>
+  		<option>U</option>
+  		<option>C</option>
+	</select>
+</div>
+
+
+<div class="col-md-6">
+	<h2>Distro</h2>
+	<hr>
+	<select id='distSelector' class="form-control">
+  		<option>Debian</option>
+  		<option>Ubuntu</option>
+	</select>
+</div>
+	
+<div class="col-md-6">
+   	<h2>Version</h2>
+	<hr>
+	<select id='debianDropDown' class="form-control">
+  		<option>Wheezy</option>
+  		<option>Jessie</option>
+  		<option>Stretch</option>
+		<option>Sid</option>
+	</select>
+	<select id='ubuntuDropDown' class="form-control">
+  		<option>Precise</option>
+  		<option>Trusty</option>
+	</select>
+</div>
+	
+	
+<hr>
+<br />
+	
+	
+<div id='extraOptions'; class="col-md-12" style="background-color: #EEEEEE; border: 2px solid;
+    border-radius: 2px; border-color: white ; margin-top: 20px; margin-bottom: 20px;" >
+    <h2>Extra Packages (Not working ATM)</h2>
+	<hr style="  margin-top: 20px; margin-bottom: 20px; border: 0; border-top: 1px solid #c7c7c7;">
+	<h1 id='loadingTasks'>Processing...</h1>
+	<div id='loadingTasksBar' class="progress">
+    <div id ='thetaskProgress' class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10" style="width: 100%">
+    </div>
+    </div>
+    <div id="desktops" class="col-md-12">
+    </div>
+</div>
+
+<br />
+
+<div class="col-md-12">
+	<button id="builder" type="button" class="btn btn-primary col-md-12">Build</button>
+</div>
+
+
+</div>
+
+
+
+
+<script>
+var rootDir;
+var p;
+var board;
+var version;
+var manufacturer;
+var codeName;
+var pathToIMG;
+var eemcCard;
+
+$("#menuButton").click(function(){
+        $("#sideBar").show("slow")
+        $("#loader").removeClass("col-md-12 col-sm-12")
+        $("#loader").addClass("col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2")
+        $("#menuButton").hide("slow")
+});
+
+
+
+function getWorkingDir(){
+    makeConnection();
+    sendMessage("cd ../ && pwd && echo 'OK'");
+    ws.onmessage = function(arguments) {
+		if (arguments.data === "OK"){
+		setVersionBar()
+		}else{
+		$("#rootD").val(arguments.data)
+    }
+    }
+}
+getWorkingDir()
+
+// off to the races are we
+function setVersionBar(){
+    var rootDir = $("#rootD").val();
+    var sedVersion = "cat "+rootDir 
+                + "/common/common.sh | grep version="
+                +"| sed \'s|version*\\=||g\' && echo 'DONEWHITETHIS'"
+              
+    makeConnection();
+    sendMessage(sedVersion);
+    ws.onmessage = function(arguments) {
+        if ( arguments.data === "DONEWHITETHIS"){
+                getallTasks()
+        }else{
+		$("#theBuildVersion").val(arguments.data)
+        }
+    }
+}
+
+
+    $("#sideBar").hide("slow");
+    $("#loader").removeClass("col-md-10 col-sm-09");
+    $("#loader").removeClass("col-sm-offset-3")
+    $("#loader").removeClass("col-md-offset-2")
+    $("#loader").addClass("col-md-12 col-sm-12", 1000, "easeOutBounce");
+
+
+
+function getallTasks(){
+    var debianDesktops = [];
+        function appendDesktopsToWeb(){
+            for (var i = 0 ; i< debianDesktops.length;i++){
+                $("#desktops").append("<div class='checkbox col-md-2'><label><input type='checkbox'>"+ debianDesktops[i] +"</label></div>")
+                $("#thetaskProgress").attr('aria-valuenow', i)
+            }
+            $("#loadingTasks").hide()
+            $("#loadingTasksBar").hide()
+        }
+    function getTasksOnly(){
+        makeConnection();
+        var getTaskselDesktop = "tasksel --list-tasks | awk \'{print $2}\' && echo 'DONEGETINGTASKS' "
+        sendMessage(getTaskselDesktop);
+        ws.onmessage = function(arguments) {
+            var tasks = arguments.data
+            if ( tasks === "DONEGETINGTASKS" ){
+            appendDesktopsToWeb()
+            }
+            console.log(arguments.data)
+            debianDesktops.push(tasks)
+        }
+    }
+getTasksOnly()
+}
+
+
+// selector changed
+$( "#distSelector" ).change(function () {
+    var dis = $("#distSelector option:selected" ).text();
+    if ( dis === "Ubuntu") {
+            $('#debianDropDown').hide();
+            $('#ubuntuDropDown').show();
+        }else{
+            $('#ubuntuDropDown').hide();
+            $('#debianDropDown').show();
+        }
+})
+
+var ds = $("#distSelector option:selected" ).text()
+if ( ds === "Debian"){
+	$('#ubuntuDropDown').hide();
+}
+
+// Build the thing
+$("#builder").click(function(){
+    //TODO add checkers 
+    console.log("builder was just clicked")
+    p = $("#pass").val();
+    rootDir = $("#rootD").val();
+    board = $("#odroidBoard option:selected").text();
+    version = $("#theBuildVersion").val();
+    manufacturer = $("#manufacturer option:selected").text().toLowerCase(); 
+    
+    var pickedDistro = $("#distSelector option:selected").text()
+    if ( pickedDistro === "Debian"){
+        var versionPicked = $("#debianDropDown option:selected").text()
+        codeName = versionPicked.toLowerCase()
+    }else{
+        var versionPicked = $("#ubuntuDropDown option:selected").text()
+        codeName = versionPicked.toLowerCase()
+    }
+    
+    pathToIMG = manufacturer + "-" + version + "-" + board + "-" + codeName
+    
+    $('#burnerModal').modal('show')
+});
+
+
+
+// open up the model and make the Image file
+$("#log").on('shown.bs.modal', function () {
+    $('#openLaterClose').hide()
+    $("#mainConentent").hide();
+    $('#output').attr("rows", "55");
+    // open the SideBar
+    $("#sideBar").show("slow")
+    $("#loader").removeClass("col-md-12 col-sm-12")
+    $("#loader").addClass("col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2")
+    $("#menuButton").hide("slow")
+        
+    var pickedDistro = $("#distSelector option:selected").text()
+    if ( pickedDistro === "Debian"){
+        var versionPicked = $("#debianDropDown option:selected").text()
+        var ver = versionPicked.toLowerCase()
+    }else{
+        var versionPicked = $("#ubuntuDropDown option:selected").text()
+        var ver = versionPicked.toLowerCase()
+    }
+
+    var sedDistro = "sed -i \'s|distro=\\.*|distro=\\\""
+                + pickedDistro.toLowerCase()
+                +"\\\"|g\' "
+                +rootDir 
+                + "/common/common.sh"
+
+    var sedCodeName = "sed -i \'s|codeName=\\.*|codeName=\\\""
+                + ver
+                +"\\\"|g' "
+                + rootDir 
+                + "/common/common.sh"
+                
+    // set the board name up 
+    var bType = $("#odroidBoard option:selected").text()
+    var boardType = "sed -i \'s|board=\\.*|board=\\\""
+                + bType
+                +"\\\"|g' "
+                + rootDir 
+                + "/common/common.sh"
+
+    // set up the version of the build 
+    var vType = $("#theBuildVersion").val()
+    var versionType = "sed -i \'s|version=\\.*|version="
+                + vType
+                +"|g' "
+                + rootDir 
+                + "/common/common.sh"
+
+    var runCommand = "cd "+ rootDir + " &&  echo \"" + p + "\" | sudo -S ./run "
+    makeConnection()	
+    sendMessage( sedDistro + " && " + sedCodeName + " && " + boardType + " && " + versionType + " && " + runCommand )
+    var webDIR = "../odroid-"+vType+"-"+bType+"-"+ ver+"/web/"
+
+    // Add the menu Items after they are done running
+    ws.onmessage = function(arguments) {
+        var word = arguments.data
+        $("#mainTitle").val("Started Plesase DO NOT close till  Pop up shows up")
+        	if ( word === "HTMLLINKED" ){
+        	    $("#navItem").append("<li ><a href='/logs/index.html'><span class='glyphicon glyphicon-tasks' aria-hidden='true'></span> Overview</a></li>")
+        	}else if (word === "DONEWITHDEPS"){
+        	// add the index of the web page made
+        	    ("#navItem").append("<li><a href='/logs/depsLogFile.html'><span class='glyphicon glyphicon-save' aria-hidden='true'></span> Pre Deps</a></li>")
+        	}
+        	else if (word === "DONEUBOOT" ) {
+        	    $("#navItem").append("<li><a href='logs/ubootLogfile.html'><span class='glyphicon glyphicon glyphicon-magnet' aria-hidden='true'></span> UBoot</a></li>")
+        	}else if ( word === "DONELINUXKERNEL"){
+        	    $("#navItem").append("<li><a href='logs/kernelCompileLogfile.html'><span class='glyphicon glyphicon-console' aria-hidden='true'></span> Kernel Compile</a></li>")
+        	}else if (word === "DONEIMGFILE"){
+        	    $("#navItem").append("<li><a href='logs/mkImageMountLog.html'><span class='glyphicon glyphicon-cd' aria-hidden='true'></span> Image</a></li>")
+        	}else if (word === "DEBOOTSTRAPSTARTED"){
+        	    $("#navItem").append("<li><a href='logs/debootstrapLogFile.html'><span class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></span> Debootstrap</a></li>")
+        	}else if ( word === "STAGETHREESTARTED"){
+        	    $("#navItem").append("<li><a href='logs/stage3Logfile.html'><span class='glyphicon glyphicon-heart-empty' aria-hidden='true'></span> Stage3</a></li>")
+        	}else if ( word === "COMPRESSIONSTARTED"){
+        	    $("#navItem").append("<li><a href='logs/compressLogFile.html'><span class='glyphicon glyphicon-compressed' aria-hidden='true'></span> Compress</a></li>")
+        	}else if ( word === "ALLDONE"){
+        	//FIXME this is where we need to add the timer and also the scanner of the usb ports and also a dd runner and sd_fuse runner with its own timer. 
+        	    alert("DONE making the distro !")
+                $('#openLaterClose').show()
+        	}else {
+        	$("#output").append(word + "\n")
+        	}
+        }
+});
+
+
+
+
+
+$("#openLaterClose").click(function(){
+    $('#burnModal').modal('show')
+
+});
+
+
+
+$("#burnerModal").on('shown.bs.modal', function () {
+    $('#okBurn').hide()
+    // look every three seconds for a eemc card
+    
+    var myTimer=setInterval(function(){
+            lookForUSBDrive()
+        },1500
+    )
+
+function lookForUSBDrive() {
+    makeConnection()
+    sendMessage("lsblk -S |grep usb | awk \'{print \"/dev/\"$1}\'")
+	ws.onmessage = function(arguments) {
+	    console.log("looking for eemc card !");
+        var eemcLooker = arguments.data
+        if (eemcLooker !== $("#eemcButton").text() ){
+            console.log(eemcLooker);
+            $("#eemcQuestion").append("<button id='eemcButton' type='button' class='btn btn-primary col-md-12'>"
+            +  eemcLooker
+            +"</button>")
+            $("#eemcButton").hide()
+        }else{
+            clearTimeout(myTimer)
+            getDeviceInfo($("#eemcButton").text())
+            
+        }
+    }
+    
+    function getDeviceInfo(device){
+        makeConnection()
+        sendMessage("lsblk -l " + device + " | head -n 2 | tail -n 1")
+	    ws.onmessage = function(arguments) {
+	        console.log("looking for eemc card !");
+	        $("#eemcQuestion").before("<pre id='dataHD'><h4>" + arguments.data + "</h4></pre>")
+            $("#eemcButton").show()
+        }
+    }
+
+    //sdFuseQuestion
+    
+}
+
+
+function sdFuseImage(){
+
+
+}
+
+function ddImage(){
+var ddCMD="echo " + p + " | sudo -S bs=1M if=" + rootDir+"/"+pathToIMG  +"/" + "  of=" +eemcCard + " && echo 'DONEBURNINGTOEEMC' "  
+
+
+}
+
+});
+
+$("#eemcQuestion").click(function(){
+        console.log($(this).text() + "\n" + rootDir)
+        eemcCard = $(this).text()
+        $("#sdFuseQuestion").append(
+            eemcCard
+            + "<br />"
+            + rootDir 
+            + "<br />" + p
+            + "<br />" + board
+            + "<br />" + version
+            + "<br />" + manufacturer
+            + "<br />" + codeName
+            + "<br />" + rootDir+"/"+pathToIMG
+        )
+        $("#burnerModal").modal("hide")
+        $("#sdFuseModal").modal("show")
+    });
+</script>

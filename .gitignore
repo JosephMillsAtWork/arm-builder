@@ -1,0 +1,6 @@
+archive/**
+toolchains/**
+toolkits/**
+## remove me later
+
+odroid-2.0-X-jessie/**

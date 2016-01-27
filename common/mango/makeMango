@@ -1,0 +1,19 @@
+#!/bin/bash
+## script that runs all init and mango look stuff
+makeInits(){
+    cd ${basedir}/
+    echo "Adding in the custom init scripts"
+    touch ${bootdir}/root/etc/motd
+    touch ${bootdir}/root/home/mango/.bashrc
+    touch ${bootdir}/root/root/.bashrc
+    touch ${bootdir}/root/etc/init.d/mango
+    
+    cp ../common/mango/mango ${bootdir}/root/etc/init.d/
+    #cp ${basedir}/common/mango/framebuffer-start ${bootdir}/root/etc/init.d/
+    #cp ${basedir}/common/mango/usbmount-start ${bootdir}/root/etc/init.d/
+    echo "Adding in the custom message of the day"
+    cp ../common/mango/motd ${bootdir}/root/etc/motd
+    cp ../common/mango/bashrc ${bootdir}/root/home/mango/.bashrc
+    cp ../common/mango/bashrc ${bootdir}/root/root/.bashrc
+    cd -
+}

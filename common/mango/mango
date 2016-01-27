@@ -1,0 +1,46 @@
+#!/bin/sh
+# chkconfig: 235 99 10
+# description: Start or stop the Mango Automation
+#
+### BEGIN INIT INFO
+# Provides: mango
+# Required-Start: $network $syslog
+# Required-Stop: $network
+# Default-Start: 2 3 5
+# Default-Stop: 0 1 6
+# Description: Start or stop the Mango Automation
+### END INIT INFO
+
+start="/opt/mango/bin/ma.sh start"
+stop="/opt/mango/bin/ma.sh stop"
+lockfile=/var/lock/subsys/mango
+name='Mango'
+
+case "$1" in
+'start')
+        $start>/dev/null 2>&1 </dev/null
+        RETVAL=$?
+        if [ "$RETVAL" = "0" ]; then
+                touch $lockfile>/dev/null 2>&1
+        fi
+        ;;
+'stop')
+        $stop
+        RETVAL=$?
+        if [ "$RETVAL" = "0" ]; then
+                rm -f $lockfile
+        fi
+        ;;
+'status')
+        status Mango
+        ;;
+'restart'|'reload'|'condrestart')
+        $stop ; $start
+        RETVAL=$?
+        ;;
+*)
+        echo "Usage: sudo service  { start | stop | restart | reload | condrestart}"
+        RETVAL=1
+        ;;
+esac
+exit $RETVAL

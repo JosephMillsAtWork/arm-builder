@@ -1,0 +1,42 @@
+<html>
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link href="http://infiniteautomation.com/templates/ws_minded/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />    
+	<!-- Bootstrap -->
+	<link href="css/bootstrap.min.css" rel="stylesheet"> 
+	<!-- Custom styles for this template -->
+        <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+<!-- these two divs end in the heder -->
+      <div class="container-fluid">
+      <div class="row">
+            
+      <!-- left hand side basr -->
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="depsLogFile.html">Pre Deps</a></li>
+            <li><a href="ubootLogfile.html">UBoot</a></li>
+            <li><a href="kernelCompileLogfile.html">Kernel Compile</a></li>
+            <li><a href="mkImageMountLog.html">Image</a></li>
+            <li><a href="debootstrapLogFile.html">Debootstrap</a></li>
+            <li><a href="stage3Logfile.html">Stage3</a></li>
+            <li><a href="compressLogFile.html">Compress</a></li>
+          </ul>
+        </div>
+<!--This also ends in the footer file -->
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <img src="img/logo.png" /><h1 class="page-header">Compression Log</h1>
+<p class="lead">
+We check to see if the host is a 64 bit machine if so then we compress also. 
+If not then we just make sha1sum's  
+</p>
+<h3>Generating sha1sum for mangoes---odroid-debian.img</h3>
+<pre>
+559cc143ad9599ad4c565a6cab605e065a25a852  odroid-2.0-debian-X.img
+</pre>
+<h3>Compressing odroid-2.0-debian-X.img</h3>
+<h3>Generating sha1sum for odroid-2.0-debian-X.img</h3><pre>
+57f896acbbce05c9785b5afecf33ae36bebd2e38  odroid-2.0-debian-X.img.xz
+</pre>
